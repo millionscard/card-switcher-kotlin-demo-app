@@ -7,14 +7,25 @@
     tools:context=".MainActivity">
 
     <Button
+        android:id="@+id/btnOpenCardSwitcher"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Update Payment info"
+        android:text="Open Card switcher"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:id="@+id/button"
+        tools:ignore="HardcodedText" />
+
+    <Button
+        android:id="@+id/btnOpenSubscriptionCanceller"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Open Subscription Canceller"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnOpenCardSwitcher"
         tools:ignore="HardcodedText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
