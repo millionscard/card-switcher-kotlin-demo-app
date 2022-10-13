@@ -102,10 +102,10 @@ class MainActivity : AppCompatActivity(), OnSessionEventListener {
         customization.companyName = "Millions"
 
         val cardOnFileSwitcher = CardOnFileSwitcher.getInstance()
-        cardOnFileSwitcher.init(this, "ab86955e-22f4-49c3-97d7-369973f4cb9e", Environment.SANDBOX)
+        cardOnFileSwitcher.init(this, "1c0a49cd-a28a-4c96-9ade-854eee575613","ab86955e-22f4-49c3-97d7-369973f4cb9e", Environment.SANDBOX)
         cardOnFileSwitcher.setCustomization(customization)
         cardOnFileSwitcher.onSessionEventListener = this
-        cardOnFileSwitcher.openCardOnFileSwitcher(sessionID, intArrayOf())
+        cardOnFileSwitcher.openCardOnFileSwitcher(intArrayOf())
     }
 
     private fun openSubscriptionCanceller(sessionID: String?) {
@@ -117,12 +117,8 @@ class MainActivity : AppCompatActivity(), OnSessionEventListener {
         val subscriptionCanceler = SubscriptionCanceler.getInstance()
         subscriptionCanceler.setCustomization(customization)
         subscriptionCanceler.setOnSessionEventListener(this)
-        subscriptionCanceler.init(this, "ab86955e-22f4-49c3-97d7-369973f4cb9e", Environment.SANDBOX)
-        subscriptionCanceler.openCardOnFileSwitcher(sessionID)
-    }
-
-    override fun onInvalidSession(sessionId: String?, errorMessage: String?) {
-        Log.d("onInvalidSession", errorMessage!!)
+        subscriptionCanceler.init(this, "1c0a49cd-a28a-4c96-9ade-854eee575613","ab86955e-22f4-49c3-97d7-369973f4cb9e", Environment.SANDBOX)
+        subscriptionCanceler.openSubscriptionCanceller(true)
     }
 
     override fun onSuccess(merchant: String?) {
