@@ -2,6 +2,7 @@ package com.knotapi.demo
 
 import android.app.ProgressDialog
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -19,22 +20,40 @@ import retrofit2.Response
 class MainActivity : AppCompatActivity(), OnSessionEventListener {
 
     private var progressDialog: ProgressDialog? = null
+    var sharedpreferences: SharedPreferences? = null
+    private val prefSessionId = "pref_session_id"
+    private var sessionId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        sharedpreferences = getSharedPreferences("sampleApp", MODE_PRIVATE)
 
         progressDialog = ProgressDialog(this)
         progressDialog?.setMessage("Please wait...")
         progressDialog?.setCancelable(false)
 
         btnOpenCardSwitcher.setOnClickListener {
-            callCreateUserAPI(false)
+            if (sessionId == "") {
+                callCreateUserAPI(false)
+            } else {
+                openCardSwitcher(sessionId)
+            }
         }
 
         btnOpenSubscriptionCanceller.setOnClickListener {
-            callCreateUserAPI(true)
+            if (sessionId == "") {
+                callCreateUserAPI(true)
+            } else {
+                openSubscriptionCanceller(sessionId)
+            }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sessionId = sharedpreferences?.getString(prefSessionId, "").toString()
     }
 
     private fun callCreateUserAPI(openSubCanceller: Boolean) {
@@ -80,6 +99,11 @@ class MainActivity : AppCompatActivity(), OnSessionEventListener {
             ) {
                 val createSessionResponse = response.body()
                 progressDialog?.hide()
+
+                val editor = sharedpreferences?.edit()
+                editor?.putString(prefSessionId, createSessionResponse?.session)
+                editor?.commit()
+
                 if (openSubCanceller) {
                     openSubscriptionCanceller(createSessionResponse?.session)
                 } else {
@@ -102,7 +126,7 @@ class MainActivity : AppCompatActivity(), OnSessionEventListener {
         customization.companyName = "Millions"
 
         val cardOnFileSwitcher = CardOnFileSwitcher.getInstance()
-        cardOnFileSwitcher.init(this, "1c0a49cd-a28a-4c96-9ade-854eee575613","ab86955e-22f4-49c3-97d7-369973f4cb9e", Environment.SANDBOX)
+        cardOnFileSwitcher.init(this, sessionID,"ab86955e-22f4-49c3-97d7-369973f4cb9e", Environment.SANDBOX)
         cardOnFileSwitcher.setCustomization(customization)
         cardOnFileSwitcher.onSessionEventListener = this
         cardOnFileSwitcher.openCardOnFileSwitcher(intArrayOf())
@@ -117,7 +141,7 @@ class MainActivity : AppCompatActivity(), OnSessionEventListener {
         val subscriptionCanceler = SubscriptionCanceler.getInstance()
         subscriptionCanceler.setCustomization(customization)
         subscriptionCanceler.setOnSessionEventListener(this)
-        subscriptionCanceler.init(this, "1c0a49cd-a28a-4c96-9ade-854eee575613","ab86955e-22f4-49c3-97d7-369973f4cb9e", Environment.SANDBOX)
+        subscriptionCanceler.init(this, sessionID,"ab86955e-22f4-49c3-97d7-369973f4cb9e", Environment.SANDBOX)
         subscriptionCanceler.openSubscriptionCanceller(true)
     }
 
