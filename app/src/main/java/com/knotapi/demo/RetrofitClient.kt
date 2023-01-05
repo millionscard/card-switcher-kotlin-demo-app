@@ -12,9 +12,6 @@ class RetrofitClient private constructor() {
     var client = OkHttpClient.Builder()
         .addInterceptor(Interceptor { chain: Interceptor.Chain ->
             val newRequest = chain.request().newBuilder()
-                .addHeader("Environment", "sandbox")
-                .addHeader("Client-Id", "ab86955e-22f4-49c3-97d7-369973f4cb9e")
-                .addHeader("Client-Secret", "d1a5cde831464cd3840ccf762f63ceb7")
                 .build()
             chain.proceed(newRequest)
         }).build()
