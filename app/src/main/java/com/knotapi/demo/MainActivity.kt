@@ -7,10 +7,11 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.knotapi.cardonfileswitcher.CardOnFileSwitcher
-import com.knotapi.cardonfileswitcher.Environment
-import com.knotapi.cardonfileswitcher.OnSessionEventListener
 import com.knotapi.cardonfileswitcher.SubscriptionCanceler
-import com.knotapi.cardonfileswitcher.model.Customization
+import com.knotapi.cardonfileswitcher.interfaces.OnSessionEventListener
+import com.knotapi.cardonfileswitcher.models.Configuration
+import com.knotapi.cardonfileswitcher.models.Environment
+import com.knotapi.cardonfileswitcher.models.Options
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -19,6 +20,9 @@ import retrofit2.Response
 class MainActivity : AppCompatActivity(), OnSessionEventListener {
 
     private var progressDialog: ProgressDialog? = null
+
+    var cardOnFileSwitcher: CardOnFileSwitcher? = null
+    var subscriptionCanceler: SubscriptionCanceler? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,29 +100,38 @@ class MainActivity : AppCompatActivity(), OnSessionEventListener {
     }
 
     private fun openCardSwitcher(sessionID: String?) {
-        val customization = Customization()
-        customization.textColor = "#ffffff"
-        customization.primaryColor = "#000000"
-        customization.companyName = "Millions"
+        val switcherConfig = Configuration(
+            Environment.SANDBOX,
+            "3f4acb6b-a8c9-47bc-820c-b0eaf24ee771",
+            sessionID
+        )
+        val options = initOptions()
 
-        val cardOnFileSwitcher = CardOnFileSwitcher.getInstance()
-        cardOnFileSwitcher.init(this, sessionID,"ab86955e-22f4-49c3-97d7-369973f4cb9e", Environment.SANDBOX)
-        cardOnFileSwitcher.setCustomization(customization)
-        cardOnFileSwitcher.onSessionEventListener = this
-        cardOnFileSwitcher.openCardOnFileSwitcher()
+        cardOnFileSwitcher = CardOnFileSwitcher.getInstance()
+        cardOnFileSwitcher?.init(this, switcherConfig, options, this)
+        cardOnFileSwitcher?.openCardOnFileSwitcher()
     }
 
     private fun openSubscriptionCanceller(sessionID: String?) {
-        val customization = Customization()
-        customization.textColor = "#fff000"
-        customization.primaryColor = "#ff0000"
-        customization.companyName = "Millions"
+        val cancelerConfig = Configuration(
+            Environment.SANDBOX,
+            "3f4acb6b-a8c9-47bc-820c-b0eaf24ee771",
+            sessionID
+        )
+        val options = initOptions()
 
-        val subscriptionCanceler = SubscriptionCanceler.getInstance()
-        subscriptionCanceler.setCustomization(customization)
-        subscriptionCanceler.setOnSessionEventListener(this)
-        subscriptionCanceler.init(this, sessionID,"ab86955e-22f4-49c3-97d7-369973f4cb9e", Environment.SANDBOX)
-        subscriptionCanceler.openSubscriptionCanceller(true)
+        subscriptionCanceler = SubscriptionCanceler.getInstance();
+        subscriptionCanceler?.init(this, cancelerConfig, options, this);
+        subscriptionCanceler?.openSubscriptionCanceller();
+    }
+
+    private fun initOptions(): Options {
+        val options = Options()
+        options.primaryColor = "#000000"
+        options.textColor = "#ffffff"
+        options.companyName = "Millions"
+        options.useCategories = false
+        return options
     }
 
     override fun onSuccess(merchant: String?) {
