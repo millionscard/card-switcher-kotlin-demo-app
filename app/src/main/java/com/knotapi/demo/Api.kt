@@ -10,5 +10,5 @@ interface Api {
     fun createUserAPI(@Body createUserRequest: CreateUserRequest?): Call<CreateUserResponse>
 
     @POST("knot/session")
-    fun createSessionAPI(@Header("Authorization") token: String?): Call<CreateSessionResponse>
+    fun createSessionAPI(@Header("Authorization") token: String?, @Body createSession: CreateSession?): Call<CreateSessionResponse>
 }

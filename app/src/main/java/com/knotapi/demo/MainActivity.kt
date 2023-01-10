@@ -75,8 +75,15 @@ class MainActivity : AppCompatActivity(), OnSessionEventListener {
     }
 
     private fun callCreateSessionAPI(token: String?, openSubCanceller: Boolean) {
+        val createSession = CreateSession()
+        if (openSubCanceller) {
+            createSession.type = "subscription_canceller"
+        } else {
+            createSession.type = "card_switcher"
+        }
+
         val call: Call<CreateSessionResponse>? =
-            RetrofitClient.instance?.myApi?.createSessionAPI("Bearer $token")
+            RetrofitClient.instance?.myApi?.createSessionAPI("Bearer $token", createSession)
         call?.enqueue(object : Callback<CreateSessionResponse?> {
             override fun onResponse(
                 call: Call<CreateSessionResponse?>,
